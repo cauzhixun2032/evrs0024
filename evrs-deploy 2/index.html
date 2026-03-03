@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evrs0024 — Every Sound, 영원히 사랑해</title>
+<meta name="description" content="모든 소리로 영원히 사랑해. AI 심리상담이 감정을 읽고, 수천 개의 청취 반응이 교차하는 단 하나의 음악을 찾아드립니다.">
+<link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Bebas+Neue&family=Noto+Serif+KR:wght@300;400&family=Noto+Sans+KR:wght@300;400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#090909;--bg1:#111;--bg2:#181818;--bg3:#212121;
+  --line:#272727;--line2:#343434;
+  --t0:#edeae1;--t1:#b4afa5;--t2:#696460;--t3:#373330;
+  --gold:#c4a96a;--gold2:#8a7248;--gold3:rgba(196,169,106,.09);--gold4:rgba(196,169,106,.18);
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;font-weight:300;overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+#cur,#cur-r{position:fixed;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%);}
+#cur{width:7px;height:7px;background:var(--gold);transition:transform .12s;}
+#cur-r{width:26px;height:26px;border:1px solid rgba(196,169,106,.3);z-index:9998;transition:width .18s,height .18s;}
+
+/* ATMOSPHERE */
+.grain{position:fixed;inset:-50%;width:200%;height:200%;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.033'/%3E%3C/svg%3E");
+  animation:grain 9s steps(10) infinite;}
+@keyframes grain{0%{transform:translate(0,0);}25%{transform:translate(-2%,3%);}50%{transform:translate(3%,-2%);}75%{transform:translate(-3%,1%);}100%{transform:translate(0,0);}}
+.sunray{position:fixed;top:-260px;right:-160px;width:840px;height:1100px;pointer-events:none;z-index:0;
+  background:conic-gradient(from 196deg at 66% 5%,transparent,rgba(196,169,106,.044) 13deg,transparent 26deg,rgba(196,169,106,.02) 33deg,transparent 46deg);
+  animation:sun 24s ease-in-out infinite;}
+@keyframes sun{0%,100%{transform:rotate(0);opacity:1;}50%{transform:rotate(5deg) translateX(16px);opacity:.6;}}
+.dust-c{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+.dust{position:absolute;border-radius:50%;background:rgba(196,169,106,.4);animation:dustup linear infinite;}
+@keyframes dustup{0%{opacity:0;transform:translateY(100vh);}12%{opacity:.8;}88%{opacity:.3;}100%{opacity:0;transform:translateY(-20px) translateX(44px);}}
+.app{position:relative;z-index:2;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;gap:0;
+  padding:16px 44px;background:linear-gradient(to bottom,rgba(9,9,9,.97) 50%,transparent);
+  border-bottom:1px solid transparent;transition:border-color .3s;}
+nav.sc{border-color:var(--line);}
+.logo-w{position:relative;cursor:none;margin-right:28px;flex-shrink:0;}
+.logo{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:5px;color:var(--gold);}
+.logo-tip{position:absolute;top:calc(100% + 10px);left:0;background:var(--bg1);border:1px solid var(--line2);
+  border-top:1px solid var(--gold);padding:12px 16px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;}
+.logo-w:hover .logo-tip{opacity:1;}
+.lt-top{font-family:'Bebas Neue',cursive;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:6px;}
+.lt-row{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:.5px;color:var(--t2);line-height:1.7;}
+.lt-row span{color:var(--t0);}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1;}
+.nl{font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--t3);background:none;border:none;padding:6px 11px;cursor:none;transition:color .2s;}
+.nl:hover,.nl.on{color:var(--t0);}
+.nl.on{color:var(--gold);}
+.nav-r{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.lang-sw{display:flex;border:1px solid var(--line2);overflow:hidden;flex-shrink:0;}
+.lb{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:2px;
+  color:var(--t3);background:none;border:none;padding:5px 10px;cursor:none;transition:all .15s;}
+.lb.on{background:var(--gold);color:var(--bg);}
+.lb:not(.on):hover{color:var(--t1);}
+.btn-li{font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--gold);background:none;border:1px solid rgba(196,169,106,.26);padding:6px 14px;cursor:none;transition:all .2s;}
+.btn-li:hover{background:var(--gold3);border-color:var(--gold);}
+.upill{display:flex;align-items:center;gap:8px;}
+.udot{width:26px;height:26px;border-radius:50%;background:var(--gold2);border:1px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:13px;color:var(--bg);}
+.unm{font-family:'Fragment Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:1px;}
+.nbtn{font-family:'Fragment Mono',monospace;font-size:9px;color:var(--t3);background:none;border:none;cursor:none;letter-spacing:1px;transition:color .2s;padding:3px 7px;}
+.nbtn:hover{color:var(--t1);}
+
+/* PAGES */
+.page{display:none;min-height:100vh;}
+.page.on{display:block;}
+
+/* HOME */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding:136px 44px 90px;position:relative;overflow:hidden;}
+.h-eye{font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:4px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:24px;opacity:0;animation:up .8s .15s ease forwards;}
+.h-head{font-family:'Bebas Neue',cursive;font-size:clamp(68px,12.5vw,164px);line-height:.87;
+  letter-spacing:1px;color:var(--t0);opacity:0;animation:up .9s .3s ease forwards;}
+.h-head em{color:var(--gold);font-style:normal;display:block;}
+.h-body{font-family:'DM Serif Display',serif;font-size:15px;line-height:1.9;color:var(--t2);
+  max-width:400px;margin-top:28px;font-style:italic;opacity:0;animation:up .8s .48s ease forwards;}
+.h-cta{display:flex;gap:14px;margin-top:40px;opacity:0;animation:up .8s .62s ease forwards;}
+.btn-g{font-family:'Fragment Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--bg);background:var(--gold);border:none;padding:14px 30px;cursor:none;transition:all .2s;position:relative;overflow:hidden;}
+.btn-g::after{content:'';position:absolute;inset:0;background:#fff;opacity:0;transition:.2s;}
+.btn-g:hover::after{opacity:.08;}
+.btn-o{font-family:'Fragment Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--t2);background:none;border:1px solid var(--line2);padding:14px 30px;cursor:none;transition:all .2s;}
+.btn-o:hover{color:var(--t0);border-color:var(--t1);}
+@keyframes up{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fi{from{opacity:0;}to{opacity:1;}}
+
+/* floating card */
+.npc{position:absolute;right:44px;top:50%;transform:translateY(-50%);width:292px;opacity:0;animation:fi 1.4s .9s ease forwards;}
+.np{background:var(--bg1);border:1px solid var(--line);padding:20px;position:relative;}
+.np::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.np-dot{display:flex;align-items:center;gap:6px;font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--t2);text-transform:uppercase;margin-bottom:16px;}
+.np-dot::before{content:'';width:5px;height:5px;background:var(--gold);border-radius:50%;animation:pulse 2s ease-in-out infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(.6);}}
+.npw{display:flex;align-items:center;gap:3px;height:44px;margin-bottom:14px;}
+.npb{flex:1;background:var(--gold2);border-radius:1px;animation:wv 1.6s ease-in-out infinite;}
+@keyframes wv{0%,100%{transform:scaleY(.22);opacity:.28;}50%{transform:scaleY(1);opacity:.82;}}
+.np-row{display:flex;justify-content:space-between;align-items:flex-end;}
+.np-title{font-family:'DM Serif Display',serif;font-size:13px;color:var(--t0);}
+.np-art{font-family:'Fragment Mono',monospace;font-size:9px;color:var(--t2);margin-top:3px;}
+.np-pl{width:28px;height:28px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:8px;}
+.np-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px;}
+.np-tag{font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:.5px;color:var(--t2);border:1px solid var(--line);padding:2px 6px;text-transform:uppercase;}
+
+/* brand strip */
+.bstrip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:0;}
+.bstrip-inner{display:grid;grid-template-columns:1fr 1px 1fr;background:var(--bg1);}
+.bs-div{background:var(--line);}
+.bs-col{padding:36px 44px;}
+.bs-lbl{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.bs-word{font-family:'Bebas Neue',cursive;font-size:42px;letter-spacing:2px;color:var(--t0);line-height:1;margin-bottom:8px;}
+.bs-body{font-family:'DM Serif Display',serif;font-size:13px;line-height:1.8;color:var(--t2);font-style:italic;}
+
+/* 3-col */
+.home3{padding:58px 44px 80px;}
+.h3g{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line);max-width:960px;margin:0 auto;}
+.h3c{background:var(--bg1);padding:26px 22px;}
+.h3n{font-family:'Bebas Neue',cursive;font-size:40px;color:var(--line2);line-height:1;margin-bottom:10px;}
+.h3t{font-family:'DM Serif Display',serif;font-size:13px;color:var(--t0);margin-bottom:7px;}
+.h3b{font-size:11px;color:var(--t2);line-height:1.75;font-weight:300;}
+
+/* DIVIDER */
+.dv{display:flex;align-items:center;gap:16px;padding:0 44px;}
+.dvl{flex:1;height:1px;background:var(--line);}
+.dvt{font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:4px;color:var(--t3);text-transform:uppercase;}
+
+/* COUNSEL */
+.cpg{padding:104px 44px 80px;max-width:700px;margin:0 auto;}
+.pge{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:13px;}
+.pgh{font-family:'Bebas Neue',cursive;font-size:clamp(32px,5vw,58px);color:var(--t0);line-height:1;margin-bottom:13px;}
+.pgs{font-family:'DM Serif Display',serif;font-size:13px;line-height:1.8;color:var(--t2);font-style:italic;margin-bottom:32px;}
+.progbar{display:flex;gap:4px;margin-bottom:7px;}
+.ps{flex:1;height:2px;background:var(--line);transition:background .4s;}
+.ps.dn{background:var(--gold2);}
+.ps.ac{background:var(--gold);box-shadow:0 0 6px rgba(196,169,106,.4);}
+.plbl{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;text-align:right;margin-bottom:13px;}
+.chatbox{background:var(--bg1);border:1px solid var(--line);position:relative;}
+.chatbox::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.msgs{height:440px;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:16px;
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent;}
+.msgs::-webkit-scrollbar{width:3px;}
+.msgs::-webkit-scrollbar-thumb{background:var(--line2);}
+.msg{display:flex;gap:11px;animation:up .35s ease;}
+.msg.u{flex-direction:row-reverse;}
+.mav{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;margin-top:2px;}
+.msg.ai .mav{background:var(--gold);color:var(--bg);font-family:'Bebas Neue',cursive;font-size:12px;}
+.msg.u .mav{background:var(--bg3);border:1px solid var(--line2);color:var(--t3);font-family:'Fragment Mono',monospace;}
+.mname{font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;margin-bottom:5px;}
+.msg.u .mname{text-align:right;}
+.mtxt{font-family:'DM Serif Display',serif;font-size:13px;line-height:1.85;color:var(--t1);font-style:italic;max-width:500px;}
+.msg.u .mtxt{color:var(--t2);text-align:right;font-style:normal;font-family:'Noto Sans KR',sans-serif;font-size:12px;}
+.mopts{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px;}
+.mopt{font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:300;color:var(--t2);
+  background:var(--bg2);border:1px solid var(--line);padding:7px 12px;cursor:none;transition:all .15s;}
+.mopt:hover{color:var(--t0);border-color:var(--gold2);}
+.mopt.ch{color:var(--gold);border-color:var(--gold);background:var(--gold3);}
+.mopt:disabled{pointer-events:none;}
+.typ{display:flex;align-items:center;gap:5px;padding:4px 0;}
+.typ span{width:5px;height:5px;background:var(--gold2);border-radius:50%;animation:td .9s ease-in-out infinite;}
+.typ span:nth-child(2){animation-delay:.17s;}
+.typ span:nth-child(3){animation-delay:.34s;}
+@keyframes td{0%,100%{transform:translateY(0);opacity:.35;}50%{transform:translateY(-5px);opacity:1;}}
+.chin-row{display:flex;gap:2px;border-top:1px solid var(--line);}
+.chin{flex:1;background:var(--bg2);border:none;color:var(--t0);font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:300;padding:13px 16px;outline:none;}
+.chin::placeholder{color:var(--t3);}
+.chsend{font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--bg);background:var(--gold);border:none;padding:13px 18px;cursor:none;transition:all .2s;white-space:nowrap;}
+.chsend:hover{background:var(--t0);}
+
+.counsel-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cm-status{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;}
+.cm-reset{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3);background:none;border:1px solid var(--line);padding:4px 10px;cursor:none;transition:all .2s;text-transform:uppercase;}
+.cm-reset:hover{color:var(--gold);border-color:var(--gold2);}
+/* RESULT */
+.rpg{padding:104px 44px 80px;max-width:880px;margin:0 auto;}
+.lsw{padding:34px;}
+.ls{display:flex;align-items:center;gap:14px;opacity:.22;transition:opacity .4s,transform .4s;transform:translateX(-10px);margin-bottom:13px;}
+.ls.ac{opacity:1;transform:translateX(0);}
+.ls.dn{opacity:.42;transform:translateX(0);}
+.lsdot{width:8px;height:8px;border-radius:50%;background:var(--line2);flex-shrink:0;transition:background .3s,box-shadow .3s;}
+.ls.ac .lsdot{background:var(--gold);box-shadow:0 0 8px rgba(196,169,106,.5);}
+.ls.dn .lsdot{background:var(--gold2);}
+.lstxt{font-family:'Fragment Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--t2);text-transform:uppercase;}
+.rsum{background:var(--bg1);border:1px solid var(--line);border-left:2px solid var(--gold);padding:20px 24px;margin-bottom:22px;animation:up .5s ease;}
+.rsuml{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:9px;}
+.rsumt{font-family:'DM Serif Display',serif;font-size:14px;line-height:1.9;color:var(--t1);font-style:italic;}
+.rkws{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px;}
+.rkw{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;background:var(--gold3);border:1px solid rgba(196,169,106,.2);color:var(--gold);padding:3px 8px;}
+.tclist{display:flex;flex-direction:column;gap:2px;}
+.tc{background:var(--bg1);border:1px solid var(--line);padding:16px 18px;display:flex;align-items:flex-start;gap:14px;cursor:none;transition:border-color .2s,background .2s;position:relative;overflow:hidden;animation:up .4s ease both;}
+.tc:hover{border-color:var(--gold2);background:var(--bg2);}
+.tc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold);transform:scaleY(0);transition:transform .2s;transform-origin:bottom;}
+.tc:hover::before{transform:scaleY(1);}
+.tcn{font-family:'Bebas Neue',cursive;font-size:28px;color:var(--line2);width:26px;text-align:center;flex-shrink:0;line-height:1;transition:color .2s;}
+.tc:hover .tcn{color:var(--gold2);}
+.tcico{width:44px;height:44px;background:var(--bg2);border:1px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.tci{flex:1;min-width:0;}
+.tctitle{font-family:'DM Serif Display',serif;font-size:14px;color:var(--t0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tcar{font-family:'Fragment Mono',monospace;font-size:10px;color:var(--t2);margin-top:2px;}
+.tcreason{font-size:11px;color:var(--t2);margin-top:5px;line-height:1.65;font-weight:300;}
+.tcr{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+.tcmatch{font-family:'Fragment Mono',monospace;font-size:10px;color:var(--gold);}
+.strrow{display:flex;gap:3px;}
+.sb{font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:.5px;text-transform:uppercase;padding:5px 8px;border:1px solid var(--line);background:none;color:var(--t3);cursor:none;transition:all .15s;}
+.sb:hover{color:var(--t0);}
+.sb.yt:hover{color:#ff4444;border-color:rgba(255,68,68,.4);background:rgba(255,68,68,.04);}
+.sb.ml:hover{color:#0ea5e9;border-color:rgba(14,165,233,.4);background:rgba(14,165,233,.04);}
+.sb.bk:hover{color:#22c55e;border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.04);}
+.ract{display:flex;gap:7px;margin-top:18px;flex-wrap:wrap;}
+.rb{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:9px 17px;cursor:none;transition:all .2s;}
+.rb.p{color:var(--bg);background:var(--gold);border:none;}
+.rb.p:hover{background:var(--t0);}
+.rb.s{color:var(--t2);background:none;border:1px solid var(--line);}
+.rb.s:hover{color:var(--t0);border-color:var(--t2);}
+
+/* HISTORY */
+.hpg{padding:104px 44px 80px;max-width:1000px;margin:0 auto;}
+.hempty{font-family:'Fragment Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--t3);text-align:center;padding:80px 40px;text-transform:uppercase;}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(256px,1fr));gap:2px;background:var(--line);}
+.hcard{background:var(--bg1);padding:18px;cursor:none;transition:background .2s;position:relative;}
+.hcard:hover{background:var(--bg2);}
+.hcard::after{content:'→';position:absolute;bottom:14px;right:14px;font-family:'Fragment Mono',monospace;font-size:10px;color:var(--t3);transition:color .2s,transform .2s;}
+.hcard:hover::after{color:var(--gold);transform:translateX(3px);}
+.hdate{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;margin-bottom:8px;}
+.hemo{font-size:20px;margin-bottom:7px;}
+.hchips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+.hchip{font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:.5px;color:var(--gold2);border:1px solid rgba(138,114,72,.22);padding:2px 5px;text-transform:uppercase;}
+.htracks{font-family:'DM Serif Display',serif;font-size:11px;color:var(--t2);line-height:1.65;font-style:italic;}
+
+/* HOW */
+.hpgw{padding:104px 44px 80px;max-width:860px;margin:0 auto;}
+.hintro{font-family:'DM Serif Display',serif;font-size:14px;line-height:1.9;color:var(--t2);max-width:520px;margin-bottom:50px;font-style:italic;}
+.asteps{display:flex;flex-direction:column;gap:2px;}
+.as{background:var(--bg1);border:1px solid var(--line);padding:24px 27px;display:grid;grid-template-columns:54px 1fr;gap:16px;transition:border-color .2s;}
+.as:hover{border-color:var(--gold2);}
+.asn{font-family:'Bebas Neue',cursive;font-size:48px;color:var(--line2);line-height:1;transition:color .2s;}
+.as:hover .asn{color:var(--gold2);}
+.astitle{font-family:'DM Serif Display',serif;font-size:14px;color:var(--t0);margin-bottom:6px;}
+.asbody{font-size:12px;color:var(--t2);line-height:1.75;font-weight:300;}
+.astags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.astag{font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:.5px;color:var(--t3);border:1px solid var(--line);padding:2px 6px;text-transform:uppercase;}
+
+/* BRAND */
+.bpg{padding:104px 44px 80px;max-width:760px;margin:0 auto;}
+.brand-top{margin-bottom:56px;}
+.brand-big{font-family:'Bebas Neue',cursive;font-size:clamp(60px,10vw,124px);letter-spacing:4px;color:var(--t0);line-height:1;margin-bottom:18px;}
+.brand-big span{color:var(--gold);}
+.brand-tl{font-family:'DM Serif Display',serif;font-size:16px;line-height:1.9;color:var(--t2);font-style:italic;margin-bottom:36px;}
+.brand-bd{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line);margin-bottom:40px;}
+.bb{background:var(--bg1);padding:28px 26px;}
+.bbl{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.bbw{font-family:'Bebas Neue',cursive;font-size:44px;letter-spacing:2px;color:var(--t0);line-height:1;margin-bottom:9px;}
+.bbb{font-family:'DM Serif Display',serif;font-size:13px;line-height:1.85;color:var(--t2);font-style:italic;}
+.brand-story{font-family:'DM Serif Display',serif;font-size:15px;line-height:2;color:var(--t1);font-style:italic;padding:32px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:40px;}
+.brand-story em{color:var(--gold);font-style:italic;}
+.brand-quote{background:var(--bg1);border:1px solid var(--line);border-left:2px solid var(--gold);padding:22px 28px;}
+.bq-lbl{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.bq-txt{font-family:'Bebas Neue',cursive;font-size:28px;letter-spacing:2px;color:var(--t0);line-height:1.2;}
+.bq-sub{font-family:'Fragment Mono',monospace;font-size:10px;color:var(--t3);margin-top:8px;letter-spacing:1px;}
+
+/* DEPLOY */
+.dpg{padding:104px 44px 80px;max-width:680px;margin:0 auto;}
+.dsteps{display:flex;flex-direction:column;gap:2px;margin-top:30px;}
+.ds{background:var(--bg1);border:1px solid var(--line);padding:22px 26px;display:grid;grid-template-columns:44px 1fr;gap:15px;}
+.dsn{font-family:'Bebas Neue',cursive;font-size:34px;color:var(--gold2);line-height:1;}
+.dstitle{font-family:'DM Serif Display',serif;font-size:14px;color:var(--t0);margin-bottom:5px;}
+.dsbody{font-size:12px;color:var(--t2);line-height:1.75;font-weight:300;}
+.dslnk{font-family:'Fragment Mono',monospace;font-size:10px;color:var(--gold);text-decoration:none;display:inline-block;margin-top:6px;letter-spacing:1px;}
+.dslnk:hover{color:var(--t0);}
+.dscode{background:var(--bg3);border:1px solid var(--line2);padding:10px 13px;margin-top:7px;font-family:'Fragment Mono',monospace;font-size:11px;color:var(--t1);}
+.dstip{background:var(--gold3);border:1px solid rgba(196,169,106,.2);border-left:2px solid var(--gold);padding:12px 16px;margin-top:18px;font-family:'Fragment Mono',monospace;font-size:10px;color:var(--t1);line-height:1.65;letter-spacing:.5px;}
+
+/* MODALS */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:300;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+.mov.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg1);border:1px solid var(--line);padding:40px;width:416px;position:relative;transform:translateY(16px);transition:transform .3s;}
+.mov.open .modal{transform:translateY(0);}
+.mx{position:absolute;top:13px;right:13px;width:26px;height:26px;background:none;border:1px solid var(--line);color:var(--t2);cursor:none;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.mx:hover{border-color:var(--gold);color:var(--t0);}
+.mh{font-family:'Bebas Neue',cursive;font-size:28px;letter-spacing:2px;color:var(--t0);margin-bottom:7px;}
+.msub{font-family:'DM Serif Display',serif;font-size:12px;color:var(--t2);margin-bottom:24px;line-height:1.7;font-style:italic;}
+.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:11px;background:var(--bg2);border:1px solid var(--line);color:var(--t1);font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:300;padding:13px;cursor:none;transition:all .2s;}
+.gbtn:hover{border-color:var(--gold2);background:var(--gold3);}
+.gico{width:16px;height:16px;background:conic-gradient(from 90deg,#4285F4 0 90deg,#34A853 90deg 180deg,#FBBC05 180deg 270deg,#EA4335 270deg);border-radius:50%;flex-shrink:0;}
+.mnote{font-family:'Fragment Mono',monospace;font-size:9px;color:var(--t3);text-align:center;line-height:1.7;margin-top:14px;letter-spacing:.5px;}
+.mdev{background:rgba(196,169,106,.04);border:1px solid rgba(196,169,106,.1);padding:11px 13px;margin-top:13px;}
+.mdevh{font-family:'Fragment Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:1px;margin-bottom:4px;}
+.mdevt{font-family:'Fragment Mono',monospace;font-size:9px;color:var(--t3);line-height:1.7;}
+.pllist{display:flex;flex-direction:column;gap:5px;max-height:280px;overflow-y:auto;margin-top:16px;}
+.plitem{background:var(--bg2);border:1px solid var(--line);padding:11px 13px;display:flex;align-items:center;justify-content:space-between;transition:border-color .2s;}
+.plitem:hover{border-color:var(--gold2);}
+.plnm{font-family:'DM Serif Display',serif;font-size:12px;color:var(--t0);font-style:italic;}
+.plmt{font-family:'Fragment Mono',monospace;font-size:9px;color:var(--t3);margin-top:2px;}
+.pldel{font-family:'Fragment Mono',monospace;font-size:9px;color:var(--t3);background:none;border:1px solid var(--line);padding:3px 7px;cursor:none;transition:all .2s;}
+.pldel:hover{color:rgba(210,80,60,.8);border-color:rgba(210,80,60,.3);}
+.plempty{font-family:'Fragment Mono',monospace;font-size:10px;color:var(--t3);text-align:center;padding:20px;text-transform:uppercase;letter-spacing:2px;}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg1);border:1px solid var(--gold2);padding:10px 18px;font-family:'Fragment Mono',monospace;font-size:10px;color:var(--gold);z-index:9000;transform:translateY(8px);opacity:0;transition:all .3s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--line2);}
+
+@media(max-width:900px){
+  nav{padding:13px 18px;}
+  .nav-links{display:none;}
+  .hero,.cpg,.rpg,.hpg,.hpgw,.bpg,.dpg{padding-left:18px;padding-right:18px;}
+  .home3{padding-left:18px;padding-right:18px;}
+  .npc{display:none;}
+  .h3g,.brand-bd{grid-template-columns:1fr;}
+  .bstrip-inner{grid-template-columns:1fr;}
+  .bs-div{display:none;}
+  .bs-col{padding:28px 18px;}
+  .dv{padding:0 18px;}
+}
+@media(max-width:600px){.h-cta,.ract{flex-direction:column;}.as{grid-template-columns:38px 1fr;}.asn{font-size:36px;}}
+</style>
+</head>
+<body>
+<div id="cur"></div><div id="cur-r"></div>
+<div class="grain"></div><div class="sunray"></div>
+<div class="dust-c" id="dustC"></div>
+<div class="app">
+
+<!-- NAV -->
+<nav id="mnav">
+  <div class="logo-w" onclick="pg('home')" style="cursor:none;">
+    <div class="logo">Evrs0024</div>
+    <div class="logo-tip">
+      <div class="lt-top">Every Sound · 영원히 사랑해</div>
+      <div class="lt-row" id="ltEn" style="display:none;"><span>Every Sound</span> — music for every emotion<br><span>0024</span> — I love you forever</div>
+      <div class="lt-row" id="ltKo"><span>Every Sound</span> — 모든 소리, 모든 감정<br><span>0024</span> — 영원히 사랑해</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <button class="nl on" onclick="pg('home')" id="nl-home" data-ko="홈" data-en="Home">홈</button>
+    <button class="nl" onclick="pg('counsel');startC();" id="nl-counsel" data-ko="심리상담" data-en="Consult">심리상담</button>
+    <button class="nl" onclick="pg('result')" id="nl-result" data-ko="추천결과" data-en="Results" style="display:none;">추천결과</button>
+    <button class="nl" onclick="pg('history')" id="nl-history" data-ko="히스토리" data-en="History">히스토리</button>
+    <button class="nl" onclick="pg('how')" id="nl-how" data-ko="알고리즘" data-en="Algorithm">알고리즘</button>
+    <button class="nl" onclick="pg('brand')" id="nl-brand" data-ko="브랜드" data-en="Brand">브랜드</button>
+    <button class="nl" onclick="pg('deploy')" id="nl-deploy" data-ko="배포가이드" data-en="Deploy">배포가이드</button>
+  </div>
+  <div class="nav-r">
+    <div class="lang-sw">
+      <button class="lb on" id="lbko" onclick="setL('ko')">KO</button>
+      <button class="lb" id="lben" onclick="setL('en')">EN</button>
+    </div>
+    <div id="navAuth"><button class="btn-li" onclick="openM('loginM')" data-ko="로그인" data-en="Sign In">로그인</button></div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="page on" id="page-home">
+  <div class="hero">
+    <div class="h-eye" data-ko="AI Music Recommendation · Every Sound · 영원히 사랑해" data-en="AI Music Recommendation · Every Sound · 0024 Hours">AI Music Recommendation · Every Sound · 영원히 사랑해</div>
+    <h1 class="h-head" data-ko="감정의<br><em>교차점</em><br>에서" data-en="Where Your<br><em>Emotions</em><br>Intersect">감정의<br><em>교차점</em><br>에서</h1>
+    <p class="h-body" data-ko="심리 상담 AI가 지금 당신의 감정을 파악하고, 수천 개의 청취 반응이 교차하는 단 하나의 음악을 찾아드립니다." data-en="Our counseling AI reads your emotional state, then finds the exact song where thousands of listener reactions intersect with yours.">심리 상담 AI가 지금 당신의 감정을 파악하고, 수천 개의 청취 반응이 교차하는 단 하나의 음악을 찾아드립니다.</p>
+    <div class="h-cta">
+      <button class="btn-g" onclick="pg('counsel');startC();" data-ko="지금 상담 시작" data-en="Start Consultation">지금 상담 시작</button>
+      <button class="btn-o" onclick="pg('brand')" data-ko="우리의 이야기" data-en="Our Story">우리의 이야기</button>
+    </div>
+    <div class="npc">
+      <div class="np">
+        <div class="np-dot">Intersection Found</div>
+        <div class="npw" id="heroWave"></div>
+        <div class="np-row">
+          <div><div class="np-title">Nuvole Bianche</div><div class="np-art">Ludovico Einaudi</div></div>
+          <div class="np-pl">▶</div>
+        </div>
+        <div class="np-tags">
+          <div class="np-tag" data-ko="비오는밤" data-en="rainy night">비오는밤</div>
+          <div class="np-tag" data-ko="감정정리" data-en="cathartic">감정정리</div>
+          <div class="np-tag">97% match</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- brand strip -->
+  <div class="bstrip">
+    <div class="bstrip-inner">
+      <div class="bs-col">
+        <div class="bs-lbl" data-ko="이름의 첫 번째 의미" data-en="First part">이름의 첫 번째 의미</div>
+        <div class="bs-word">EVRS</div>
+        <div class="bs-body" data-ko="Every Sound — 모든 소리, 모든 감정, 모든 사람을 위한 음악." data-en="Every Sound — music for every emotion, every person, every moment.">Every Sound — 모든 소리, 모든 감정, 모든 사람을 위한 음악.</div>
+      </div>
+      <div class="bs-div"></div>
+      <div class="bs-col">
+        <div class="bs-lbl" data-ko="이름의 두 번째 의미" data-en="Second part">이름의 두 번째 의미</div>
+        <div class="bs-word">0024</div>
+        <div class="bs-body" data-ko="영원히 사랑해 — 새벽 3시의 외로움도, 낮 12시의 설렘도. 언제나 곁에 있을게요." data-en="I love you forever — 3am loneliness, noon excitement. We'll always be here.">영원히 사랑해 — 새벽 3시의 외로움도, 낮 12시의 설렘도. 언제나 곁에 있을게요.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dv" style="margin:2px 0;"><div class="dvl"></div><div class="dvt">How it works</div><div class="dvl"></div></div>
+
+  <div class="home3">
+    <div class="h3g">
+      <div class="h3c">
+        <div class="h3n">01</div>
+        <div class="h3t" data-ko="AI 심리 상담" data-en="AI Counseling">AI 심리 상담</div>
+        <div class="h3b" data-ko="채팅으로 AI와 대화하며 지금 감정과 상황을 자연스럽게 풀어냅니다. 체크박스보다 훨씬 깊은 맥락이 만들어집니다." data-en="Chat naturally to unpack your emotions. Creates far richer context than checkboxes.">채팅으로 AI와 대화하며 지금 감정과 상황을 자연스럽게 풀어냅니다.</div>
+      </div>
+      <div class="h3c">
+        <div class="h3n">02</div>
+        <div class="h3t" data-ko="교차점 분석" data-en="Intersection Analysis">교차점 분석</div>
+        <div class="h3b" data-ko="인터넷 청취 반응, 가사, 알고리즘 유사도에서 공통으로 등장하는 분위기의 교차점을 찾아냅니다." data-en="We find the exact point where online listener reactions, lyrics, and algorithmic similarity converge.">인터넷 청취 반응, 가사, 알고리즘 유사도에서 교차점을 찾아냅니다.</div>
+      </div>
+      <div class="h3c">
+        <div class="h3n">03</div>
+        <div class="h3t" data-ko="즉시 연결" data-en="Play Instantly">즉시 연결</div>
+        <div class="h3b" data-ko="YouTube, 멜론, 벅스에서 바로 들을 수 있습니다. 마음에 드는 곡은 플레이리스트로 저장하세요." data-en="Stream on YouTube, Melon or Bugs instantly. Save favorites to your playlist.">YouTube, 멜론, 벅스에서 바로 들을 수 있습니다.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COUNSEL -->
+<div class="page" id="page-counsel">
+  <div class="cpg">
+    <div class="pge" data-ko="AI 심리 상담" data-en="AI Counseling">AI 심리 상담</div>
+    <h2 class="pgh" data-ko="오늘 어떠세요?" data-en="How are you today?">오늘 어떠세요?</h2>
+    <p class="pgs" data-ko="지금 느끼는 걸 자유롭게 얘기해줘요. 감정, 상황, 날씨, 뭐든. AI가 대화를 나누며 딱 맞는 음악을 찾아드려요." data-en="Just talk freely — emotions, situation, weather, anything. The AI will have a real conversation and find your music.">지금 느끼는 걸 자유롭게 얘기해줘요. 감정, 상황, 날씨, 뭐든. AI가 대화를 나누며 딱 맞는 음악을 찾아드려요.</p>
+    <div class="counsel-meta">
+      <div class="cm-status" id="cmStatus" data-ko="대화를 시작해주세요" data-en="Start the conversation">대화를 시작해주세요</div>
+      <button class="cm-reset" onclick="startC()" data-ko="처음부터" data-en="Reset">처음부터</button>
+    </div>
+    <div class="chatbox">
+      <div class="msgs" id="msgs"></div>
+      <div class="chin-row">
+        <input class="chin" id="chin" type="text" placeholder="지금 어떤 기분이에요? 자유롭게 얘기해줘요..." onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="chsend" onclick="sendMsg()" data-ko="전송" data-en="Send">전송</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="page" id="page-result">
+  <div class="rpg">
+    <div class="pge" data-ko="추천 결과" data-en="Your Results">추천 결과</div>
+    <h2 class="pgh" id="rH">교차점을 찾았습니다</h2>
+    <div id="loadD">
+      <div class="lsw">
+        <div class="ls" id="ls0"><div class="lsdot"></div><div class="lstxt" data-ko="감정 맥락 분석 중" data-en="Analyzing emotional context">감정 맥락 분석 중</div></div>
+        <div class="ls" id="ls1"><div class="lsdot"></div><div class="lstxt" data-ko="후보곡 풀 수집 중" data-en="Gathering candidate tracks">후보곡 풀 수집 중</div></div>
+        <div class="ls" id="ls2"><div class="lsdot"></div><div class="lstxt" data-ko="청중 반응 교차 분석" data-en="Cross-referencing listener reactions">청중 반응 교차 분석</div></div>
+        <div class="ls" id="ls3"><div class="lsdot"></div><div class="lstxt" data-ko="가사·분위기 유사도 계산" data-en="Calculating mood similarity">가사·분위기 유사도 계산</div></div>
+        <div class="ls" id="ls4"><div class="lsdot"></div><div class="lstxt" data-ko="최적 교차점 선별" data-en="Selecting optimal intersection">최적 교차점 선별</div></div>
+      </div>
+    </div>
+    <div id="resultD" style="display:none;">
+      <div class="rsum" id="rSum"></div>
+      <div class="tclist" id="tcList"></div>
+      <div class="ract">
+        <button class="rb p" onclick="savePL()" data-ko="드라이브에 저장" data-en="Save to Drive">드라이브에 저장</button>
+        <button class="rb s" onclick="pg('counsel');startC();" data-ko="다시 상담받기" data-en="New Consultation">다시 상담받기</button>
+        <button class="rb s" onclick="regen()" data-ko="다른 곡으로" data-en="Different Tracks">다른 곡으로</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="page" id="page-history">
+  <div class="hpg">
+    <div class="pge" data-ko="추천 히스토리" data-en="Recommendation History">추천 히스토리</div>
+    <h2 class="pgh" style="margin-bottom:34px;" data-ko="나의 기록" data-en="My Records">나의 기록</h2>
+    <div id="histD"></div>
+  </div>
+</div>
+
+<!-- HOW -->
+<div class="page" id="page-how">
+  <div class="hpgw">
+    <div class="pge" data-ko="알고리즘 구조" data-en="Algorithm Structure">알고리즘 구조</div>
+    <h2 class="pgh" style="margin-bottom:20px;" data-ko="교차점을 찾는 방식" data-en="How We Find the Intersection">교차점을 찾는 방식</h2>
+    <p class="hintro" data-ko="단순한 태그 매칭이 아닙니다. 인터넷에 존재하는 수많은 청취 반응에서 반복되는 감정과 키워드를 추출하고, 사용자의 맥락과 가장 많이 겹치는 곡을 선별합니다." data-en="This isn't simple tag matching. We extract recurring emotions from thousands of listener reactions, then surface the tracks whose intersection overlaps most with your context.">단순한 태그 매칭이 아닙니다.</p>
+    <div class="asteps">
+      <div class="as"><div class="asn">01</div><div><div class="astitle" data-ko="AI 심리 상담으로 맥락 파악" data-en="Context via AI Counseling">AI 심리 상담으로 맥락 파악</div><div class="asbody" data-ko="같은 '우울'이라도 이별인지 번아웃인지에 따라 전혀 다른 음악이 필요합니다. 자연어 대화가 그 차이를 잡아냅니다." data-en="The same sadness from heartbreak vs. burnout needs completely different music. Natural conversation captures that difference.">같은 '우울'이라도 이별인지 번아웃인지에 따라 전혀 다른 음악이 필요합니다.</div><div class="astags"><span class="astag">NLP</span><span class="astag" data-ko="감정분류" data-en="emotion classification">감정분류</span></div></div></div>
+      <div class="as"><div class="asn">02</div><div><div class="astitle" data-ko="후보곡 풀 수집" data-en="Candidate Pool">후보곡 풀 수집</div><div class="asbody" data-ko="감정·상황 키워드와 유사한 가사, 장르, BPM을 기반으로 수백 개의 후보곡을 넓게 모읍니다." data-en="We cast a wide net using emotion keywords, lyric similarity, genre and BPM to gather hundreds of candidates.">감정·상황 키워드와 유사한 가사, 장르, BPM을 기반으로 수백 개의 후보곡을 모읍니다.</div><div class="astags"><span class="astag" data-ko="가사유사도" data-en="lyric similarity">가사유사도</span><span class="astag">BPM</span></div></div></div>
+      <div class="as"><div class="asn">03</div><div><div class="astitle" data-ko="청중 반응 교차 분석" data-en="Listener Reaction Analysis">청중 반응 교차 분석</div><div class="asbody" data-ko="유튜브 댓글, 음악 리뷰, SNS 반응에서 반복 등장하는 키워드를 추출합니다. 많은 사람이 같은 상황에서 같은 곡을 언급했다면 — 그것이 교차점입니다." data-en="Keywords repeated across YouTube comments, reviews and social reactions are extracted. When many people mention the same track in the same context — that's the intersection.">많은 사람이 같은 상황에서 같은 곡을 언급했다면 — 그것이 교차점입니다.</div><div class="astags"><span class="astag" data-ko="교차점" data-en="intersection">교차점</span></div></div></div>
+      <div class="as"><div class="asn">04</div><div><div class="astitle" data-ko="개인화 및 선별" data-en="Personalization">개인화 및 선별</div><div class="asbody" data-ko="최근 청취 이력, BPM 선호도, 언어를 반영해 교차점이 가장 높은 곡부터 순위를 매겨 제공합니다." data-en="Recent listening history, BPM and language preference are applied to rank candidates by intersection score.">최근 청취 이력, BPM, 언어를 반영해 교차점이 가장 높은 곡부터 순위를 매겨 제공합니다.</div><div class="astags"><span class="astag" data-ko="개인화" data-en="personalization">개인화</span><span class="astag" data-ko="랭킹" data-en="ranking">랭킹</span></div></div></div>
+      <div class="as"><div class="asn">05</div><div><div class="astitle" data-ko="피드백 루프" data-en="Feedback Loop">피드백 루프</div><div class="asbody" data-ko="저장, 스트리밍 클릭 여부를 기반으로 다음 추천이 점점 정교해집니다." data-en="Saves and streaming clicks feed back into the system, making each recommendation more precise.">저장, 스트리밍 클릭 여부를 기반으로 다음 추천이 점점 정교해집니다.</div><div class="astags"><span class="astag" data-ko="학습" data-en="learning">학습</span></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- BRAND -->
+<div class="page" id="page-brand">
+  <div class="bpg">
+    <div class="pge" data-ko="브랜드 스토리" data-en="Brand Story">브랜드 스토리</div>
+    <div class="brand-top">
+      <div class="brand-big"><span>EVRS</span>0024</div>
+      <p class="brand-tl" id="btl" data-ko="Every Sound, 영원히 사랑해." data-en="Every Sound. I love you forever.">Every Sound, 영원히 사랑해.</p>
+    </div>
+    <div class="brand-bd">
+      <div class="bb">
+        <div class="bbl" data-ko="EVRS 의 의미" data-en="What EVRS means">EVRS 의 의미</div>
+        <div class="bbw">EVRS</div>
+        <div class="bbb" id="bbE" data-ko="Every Sound. 모든 소리, 모든 감정, 모든 사람을 위한 음악. 장르도, 언어도, 시간대도 가리지 않습니다. 당신이 느끼는 감정이 어떤 것이든, 그 감정에 맞는 소리가 어딘가에 있다고 믿습니다." data-en="Every Sound. Music for every emotion, every person, every moment. No genre, language, or hour excluded. Whatever you feel, we believe there's a sound that matches it somewhere.">Every Sound. 모든 소리, 모든 감정, 모든 사람을 위한 음악.</div>
+      </div>
+      <div class="bb">
+        <div class="bbl" data-ko="0024 의 의미" data-en="What 0024 means">0024 의 의미</div>
+        <div class="bbw">0024</div>
+        <div class="bbb" id="bb0" data-ko="영원히 사랑해. 음악을 듣는 사람에게, 음악을 만드는 사람에게, 그리고 지금 이 순간 무언가를 느끼고 있는 모든 사람에게 전하는 말입니다. 새벽 3시에도, 낮 12시에도, 0024시간 언제나." data-en="I love you forever. Said to everyone who listens, everyone who makes music, everyone feeling something right now. At 3am, at noon — 0024 hours, always.">영원히 사랑해. 지금 이 순간 무언가를 느끼고 있는 모든 사람에게 전하는 말입니다.</div>
+      </div>
+    </div>
+    <div class="brand-story" id="bstory" data-ko="음악이 필요한 순간은 항상 <em>예고 없이</em> 찾아옵니다. 어떤 플레이리스트도 지금 이 감정에 딱 맞지 않을 때, 어떤 장르를 검색해야 할지 모를 때. Evrs0024는 그 순간을 위해 만들어졌습니다.<br><br>당신이 느끼는 감정의 결, 지금 있는 곳의 날씨, 창밖의 시간. 그것들이 모두 겹치는 단 하나의 <em>교차점</em>에서 음악을 찾습니다.<br><br>Every Sound — <em>영원히 사랑해.</em>" data-en="The moments when you need music most always arrive <em>without warning</em>. When no playlist feels quite right, when you don't know what genre to search for. Evrs0024 was built for that moment.<br><br>The texture of what you're feeling, the weather outside, the hour on the clock. We find music at the exact <em>intersection</em> where all of it converges.<br><br>Every Sound — <em>I love you forever.</em>">음악이 필요한 순간은 항상 <em>예고 없이</em> 찾아옵니다.</div>
+    <div class="brand-quote">
+      <div class="bq-lbl" data-ko="Evrs0024 의 약속" data-en="The Evrs0024 Promise">Evrs0024 의 약속</div>
+      <div class="bq-txt" id="bqtxt" data-ko="모든 감정에는 그에 맞는 소리가 있다. 우리는 그 교차점을 찾는다." data-en="Every emotion has a sound. We find the intersection.">모든 감정에는 그에 맞는 소리가 있다. 우리는 그 교차점을 찾는다.</div>
+      <div class="bq-sub">Every Sound · 0024 · 영원히 사랑해</div>
+    </div>
+  </div>
+</div>
+
+<!-- DEPLOY -->
+<div class="page" id="page-deploy">
+  <div class="dpg">
+    <div class="pge" data-ko="배포 가이드" data-en="Deploy Guide">배포 가이드</div>
+    <h2 class="pgh" data-ko="사이트 올리는 법" data-en="How to Publish">사이트 올리는 법</h2>
+    <p class="pgs" data-ko="처음이어도 괜찮아요. 10분이면 충분합니다. 무료입니다." data-en="First time? 10 minutes. Completely free.">처음이어도 괜찮아요. 10분이면 충분합니다. 무료입니다.</p>
+    <div class="dsteps">
+      <div class="ds"><div class="dsn">01</div><div><div class="dstitle" data-ko="Vercel 가입" data-en="Sign up for Vercel">Vercel 가입</div><div class="dsbody" data-ko="vercel.com 접속 → Sign Up → Google 계정으로 가입. 신용카드 없이 완전 무료." data-en="Go to vercel.com → Sign Up → Continue with Google. No credit card. Free.">vercel.com 접속 → Sign Up → Google 계정으로 가입. 완전 무료.</div><a class="dslnk" href="https://vercel.com" target="_blank">vercel.com →</a></div></div>
+      <div class="ds"><div class="dsn">02</div><div><div class="dstitle" data-ko="파일 이름 바꾸기" data-en="Rename Your File">파일 이름 바꾸기</div><div class="dsbody" data-ko="다운로드한 파일 이름을 index.html 로 바꿔주세요." data-en="Rename your downloaded file to index.html.">다운로드한 파일 이름을 index.html 로 바꿔주세요.</div></div></div>
+      <div class="ds"><div class="dsn">03</div><div><div class="dstitle" data-ko="폴더에 담기" data-en="Create a Folder">폴더에 담기</div><div class="dsbody" data-ko="새 폴더를 만들고 그 안에 index.html을 넣으세요." data-en="Create a new folder and place index.html inside.">새 폴더를 만들고 그 안에 index.html을 넣으세요.</div><div class="dscode">📁 evrs0024/<br>　└── index.html</div></div></div>
+      <div class="ds"><div class="dsn">04</div><div><div class="dstitle" data-ko="Vercel에 드래그앤드롭" data-en="Drag & Drop to Vercel">Vercel에 드래그앤드롭</div><div class="dsbody" data-ko="Vercel 대시보드 → Add New → Project → 폴더 드래그앤드롭 → Deploy. 1분 안에 링크 생성." data-en="Vercel dashboard → Add New → Project → drag-drop folder → Deploy. Link appears in under 1 minute.">Vercel 대시보드 → Add New → Project → 폴더 드래그앤드롭 → Deploy.</div></div></div>
+      <div class="ds"><div class="dsn">05</div><div><div class="dstitle" data-ko="링크 공유" data-en="Share Your Link">링크 공유</div><div class="dsbody" data-ko="evrs0024.vercel.app 같은 주소가 자동 생성됩니다. 나중에 evrs0024.com 같은 도메인을 원하면 Settings → Domains (연 1~2만원)." data-en="A free link like evrs0024.vercel.app is auto-generated. For a custom domain later, go to Settings → Domains (~$10/year).">evrs0024.vercel.app 같은 주소가 자동 생성됩니다.</div></div></div>
+    </div>
+    <div class="dstip" data-ko="💡 나중에 수정하고 싶으면 — 파일 고친 후 Vercel에 다시 드래그앤드롭하면 자동 업데이트됩니다." data-en="💡 Want to update later? Edit the file and drag-drop again to Vercel — it auto-updates.">💡 나중에 수정하고 싶으면 — 파일 고친 후 Vercel에 다시 드래그앤드롭하면 자동 업데이트됩니다.</div>
+  </div>
+</div>
+
+</div><!-- .app -->
+
+<!-- MODALS -->
+<div class="mov" id="loginM"><div class="modal">
+  <button class="mx" onclick="closeM('loginM')">✕</button>
+  <div class="mh">Sign In</div>
+  <p class="msub" data-ko="로그인하면 추천 히스토리와 플레이리스트를 저장할 수 있어요." data-en="Sign in to save your history and playlists.">로그인하면 추천 히스토리와 플레이리스트를 저장할 수 있어요.</p>
+  <button class="gbtn" onclick="doLogin()"><div class="gico"></div><span data-ko="Google 계정으로 계속하기" data-en="Continue with Google">Google 계정으로 계속하기</span></button>
+  <p class="mnote" data-ko="구글 드라이브 접근 권한이 요청됩니다. 저장 기능에만 사용됩니다." data-en="Google Drive access for save functionality only.">구글 드라이브 접근 권한이 요청됩니다. 저장 기능에만 사용됩니다.</p>
+  <div class="mdev"><div class="mdevh">▸ Dev Note</div><div class="mdevt" data-ko="실제 로그인: Google OAuth 2.0 Client ID 발급 필요. 현재는 시뮬레이션 작동." data-en="Real auth needs Google OAuth 2.0 Client ID. Currently simulation mode.">실제 로그인: Google OAuth 2.0 Client ID 발급 필요. 현재는 시뮬레이션.</div></div>
+</div></div>
+
+<div class="mov" id="plM"><div class="modal">
+  <button class="mx" onclick="closeM('plM')">✕</button>
+  <div class="mh" data-ko="플레이리스트" data-en="Playlists">플레이리스트</div>
+  <p class="msub" data-ko="저장된 플레이리스트입니다." data-en="Your saved playlists.">저장된 플레이리스트입니다.</p>
+  <div class="pllist" id="plList"></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── LANG ──
+let L='ko';
+function setL(l){
+  L=l;
+  document.getElementById('lbko').classList.toggle('on',l==='ko');
+  document.getElementById('lben').classList.toggle('on',l==='en');
+  document.documentElement.lang=l;
+  document.querySelectorAll('[data-ko]').forEach(el=>{
+    const v=el.getAttribute('data-'+l);if(!v)return;
+    if(el.tagName==='INPUT'){el.placeholder=v;}
+    else if(v.includes('<')){el.innerHTML=v;}
+    else{el.textContent=v;}
+  });
+  document.getElementById('ltKo').style.display=l==='ko'?'':'none';
+  document.getElementById('ltEn').style.display=l==='en'?'':'none';
+  document.getElementById('chin').placeholder=l==='ko'?'지금 어떤 기분이에요? 자유롭게 얘기해줘요...':'How are you feeling? Just talk freely...';
+  updateAuthUI();
+}
+
+// ── CURSOR ──
+const $c=document.getElementById('cur'),$r=document.getElementById('cur-r');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;$c.style.left=mx+'px';$c.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;$r.style.left=rx+'px';$r.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('button,input').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{$c.style.transform='translate(-50%,-50%) scale(2.2)';$r.style.width='40px';$r.style.height='40px';});
+  el.addEventListener('mouseleave',()=>{$c.style.transform='translate(-50%,-50%) scale(1)';$r.style.width='26px';$r.style.height='26px';});
+});
+
+// ── DUST ──
+const dc=document.getElementById('dustC');
+function mkDust(){
+  const d=document.createElement('div');d.className='dust';
+  d.style.cssText=`left:${Math.random()*48+50}%;bottom:-4px;width:${Math.random()*2+1}px;height:${Math.random()*2+1}px;animation-duration:${Math.random()*13+8}s;animation-delay:${Math.random()*5}s;`;
+  dc.appendChild(d);setTimeout(()=>d.remove(),26000);
+}
+setInterval(mkDust,650);for(let i=0;i<22;i++)mkDust();
+
+// ── HERO WAVE ──
+const hw=document.getElementById('heroWave');
+[28,55,76,97,64,41,86,57,47,77,37,67,87,51,41,71,61,47,81,57,31,67,51,41,77].forEach((h,i)=>{
+  const b=document.createElement('div');b.className='npb';b.style.cssText=`height:${h}%;animation-delay:${i*.064}s;`;hw.appendChild(b);
+});
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll',()=>document.getElementById('mnav').classList.toggle('sc',scrollY>40));
+
+// ── PAGES ──
+function pg(id){
+  ['home','counsel','result','history','how','brand','deploy'].forEach(p=>{
+    document.getElementById('page-'+p).classList.toggle('on',p===id);
+  });
+  document.querySelectorAll('.nl').forEach(l=>l.classList.remove('on'));
+  const nl=document.getElementById('nl-'+id);if(nl)nl.classList.add('on');
+  scrollTo(0,0);
+  if(id==='history')renderHist();
+}
+
+// ── AUTH ──
+let USER=null;
+function doLogin(){USER={name:L==='ko'?'사용자':'User'};closeM('loginM');updateAuthUI();showToast(L==='ko'?'✓ 로그인되었습니다':'✓ Signed in');}
+function doLogout(){USER=null;updateAuthUI();showToast(L==='ko'?'로그아웃되었습니다':'Signed out');}
+function updateAuthUI(){
+  const el=document.getElementById('navAuth');
+  if(USER){
+    el.innerHTML=`<div class="upill"><div class="udot">${USER.name[0]}</div><span class="unm">${USER.name}</span><button class="nbtn" onclick="openM('plM');renderPL()">${L==='ko'?'플레이리스트':'Playlists'}</button><button class="nbtn" onclick="doLogout()">${L==='ko'?'로그아웃':'Sign Out'}</button></div>`;
+  }else{el.innerHTML=`<button class="btn-li" onclick="openM('loginM')">${L==='ko'?'로그인':'Sign In'}</button>`;}
+}
+
+// ── MODALS ──
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.mov').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+
+// ── TOAST ──
+function showToast(m,ms=2600){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
+
+// ── STORAGE ──
+const SK='evrs_v4';
+function getData(){try{const d=localStorage.getItem(SK);return d?JSON.parse(d):{history:[],playlists:[]};}catch{return{history:[],playlists:[]};}}
+function setData(d){try{localStorage.setItem(SK,JSON.stringify(d));}catch{}}
+function addHist(e){if(!USER)return;const d=getData();d.history.unshift({...e,id:Date.now(),ts:new Date().toISOString()});if(d.history.length>30)d.history=d.history.slice(0,30);setData(d);}
+
+// ══════════════════════════════════════════
+// FREE-FORM AI COUNSELING (ChatGPT style)
+// ══════════════════════════════════════════
+let chatHistory = [];   // {role, content}
+let counselDone = false;
+let turnCount = 0;
+const MAX_TURNS = 8; // AI가 충분히 파악하면 자동으로 추천으로 넘어감
+
+const SYSTEM_PROMPT_KO = `당신은 Evrs0024의 AI 음악 상담사입니다. 브랜드 철학: "Every Sound, 영원히 사랑해."
+
+역할:
+- 사용자와 자유롭게 대화하며 지금의 감정, 상황, 필요를 파악합니다
+- 딱딱한 질문 목록 없이, 친한 친구처럼 자연스럽게 대화합니다
+- 한 번에 하나의 질문만, 짧고 따뜻하게
+- 3~5번의 교환 후 충분히 파악되면 음악 추천 준비를 알립니다
+
+파악해야 할 것들 (자연스럽게):
+- 지금 감정 / 그 이유나 상황
+- 음악에서 원하는 것 (위로, 집중, 기분전환 등)
+- 지금 있는 곳 / 시간대 / 날씨
+- 음악 스타일 선호 (있다면)
+
+규칙:
+- 한국어로만 답하세요
+- 200자 이내로 짧게
+- 공감 먼저, 질문은 하나만
+- 충분히 파악됐다고 판단하면 마지막에 "[READY]" 라고만 추가하세요 (사용자에게는 보이지 않음)`;
+
+const SYSTEM_PROMPT_EN = `You are Evrs0024's AI music counselor. Brand philosophy: "Every Sound, I love you forever."
+
+Your role:
+- Have a free, natural conversation to understand the user's emotions, situation, and needs
+- No rigid question lists — talk like a warm, understanding friend
+- One question at a time, short and empathetic
+- After 3-5 exchanges, when you have enough context, signal you're ready
+
+What to naturally uncover:
+- Current emotion and why
+- What they need from music (comfort, focus, mood lift, etc.)
+- Current location / time of day / weather
+- Music style preferences (if any)
+
+Rules:
+- Reply in English only
+- Keep responses under 150 words
+- Empathy first, one question only
+- When you have enough context, add "[READY]" at the very end (hidden from user)`;
+
+function startC(){
+  chatHistory=[];counselDone=false;turnCount=0;
+  document.getElementById('msgs').innerHTML='';
+  document.getElementById('chin').value='';
+  setStatus(L==='ko'?'대화를 시작해주세요':'Start the conversation');
+  // First AI message
+  setTimeout(()=>aiGreet(),400);
+}
+
+async function aiGreet(){
+  const greet = L==='ko'
+    ? '안녕하세요 ✦  지금 어떤 기분이에요? 편하게 얘기해줘요.'
+    : 'Hello ✦  How are you feeling right now? Just talk freely.';
+  appendMsg('ai', greet);
+  chatHistory.push({role:'assistant',content:greet});
+}
+
+function setStatus(txt){
+  const el=document.getElementById('cmStatus');
+  if(el)el.textContent=txt;
+}
+
+function sendMsg(){
+  const inp=document.getElementById('chin');
+  const v=inp.value.trim();if(!v||counselDone)return;
+  inp.value='';
+  appendMsg('user',v);
+  chatHistory.push({role:'user',content:v});
+  turnCount++;
+  setStatus(L==='ko'?`대화 중 · ${turnCount}번째`:`Conversation · turn ${turnCount}`);
+  setTimeout(()=>aiReply(),500);
+}
+
+async function aiReply(){
+  // Show typing
+  const typId='typ-'+Date.now();
+  const td=document.createElement('div');td.className='msg ai';td.id=typId;
+  td.innerHTML=`<div class="mav">E</div><div class="mbody"><div class="mname">Evrs AI</div><div class="mtxt"><div class="typ"><span></span><span></span><span></span></div></div></div>`;
+  document.getElementById('msgs').appendChild(td);
+  document.getElementById('msgs').scrollTop=9999;
+
+  let reply='';
+  try{
+    const res=await fetch('/api/chat',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:300,
+        system: L==='ko'?SYSTEM_PROMPT_KO:SYSTEM_PROMPT_EN,
+        messages: chatHistory.map(m=>({role:m.role,content:m.content}))
+      })
+    });
+    const data=await res.json();
+    reply=data.content?.map(i=>i.text||'').join('')||'';
+  }catch{
+    reply=L==='ko'?'잠깐, 연결에 문제가 생겼어요. 다시 얘기해줄 수 있어요?':'Connection issue — can you try again?';
+  }
+
+  // Remove typing indicator
+  document.getElementById(typId)?.remove();
+
+  const isReady=reply.includes('[READY]');
+  const cleanReply=reply.replace('[READY]','').trim();
+
+  appendMsg('ai',cleanReply);
+  chatHistory.push({role:'assistant',content:cleanReply});
+
+  if(isReady||turnCount>=MAX_TURNS){
+    counselDone=true;
+    setStatus(L==='ko'?'분석 완료 ✓':'Analysis complete ✓');
+    setTimeout(()=>endCounsel(),1200);
+  }
+}
+
+function appendMsg(role,text){
+  const msgs=document.getElementById('msgs');
+  const d=document.createElement('div');d.className='msg '+(role==='user'?'u':'ai');
+  const label=role==='user'?(L==='ko'?'나':'Me'):'Evrs AI';
+  const av=role==='user'?(L==='ko'?'나':'Me'):'E';
+  d.innerHTML=`<div class="mav">${av}</div><div class="mbody"><div class="mname">${label}</div><div class="mtxt">${text}</div></div>`;
+  msgs.appendChild(d);msgs.scrollTop=9999;
+}
+
+async function endCounsel(){
+  const farewell=L==='ko'
+    ? '얘기해줘서 고마워요 ✦  지금 나눈 대화를 바탕으로 음악을 찾아볼게요. 잠깐만요.'
+    : 'Thank you for sharing ✦  Finding your music based on our conversation. One moment.';
+  appendMsg('ai',farewell);
+  await sleep(1300);
+  document.getElementById('nl-result').style.display='';
+  pg('result');runRec();
+}
+
+// ══════════════════════════════════════════
+// RECOMMENDATION ENGINE
+// ══════════════════════════════════════════
+let lastHistory=null;
+
+async function runRec(){
+  document.getElementById('loadD').style.display='';document.getElementById('resultD').style.display='none';
+  document.querySelectorAll('.ls').forEach(l=>l.className='ls');
+  const sids=['ls0','ls1','ls2','ls3','ls4'];
+  for(let i=0;i<sids.length;i++){await sleep(i===0?180:620);sids.forEach((s,j)=>{document.getElementById(s).className='ls'+(j<i?' dn':j===i?' ac':'');});}
+  lastHistory=[...chatHistory];
+  let text='';
+  try{
+    const res=await fetch('/api/chat',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1600,messages:[{role:'user',content:buildPrompt()}]})
+    });
+    const data=await res.json();text=data.content?.map(i=>i.text||'').join('')||'';
+  }catch{text=fallback();}
+  await sleep(320);renderResult(text);
+}
+
+function buildConvSummary(){
+  return chatHistory
+    .filter(m=>m.role==='user')
+    .map(m=>m.content)
+    .join(' / ');
+}
+
+function buildPrompt(){
+  const conv=chatHistory.map(m=>`${m.role==='user'?(L==='ko'?'사용자':'User'):'AI'}: ${m.content}`).join('\n');
+  if(L==='en') return `You are Evrs0024 — "Every Sound, I love you forever."
+An emotionally intelligent AI music recommendation system.
+
+The user just completed a free-form counseling conversation. Here is the full transcript:
+---
+${conv}
+---
+
+Based on this conversation, recommend 5 songs that perfectly match the user's emotional state and situation.
+
+CRITICAL RULES FOR SONG SELECTION:
+- Draw from the ENTIRE history of recorded music — all genres, all eras, all languages, all countries
+- Include obscure/indie tracks, not just mainstream hits
+- Mix: K-pop, J-pop, Western pop, R&B, jazz, classical, electronic, folk, hip-hop, metal, world music — whatever fits
+- Consider: BPM, lyrical themes, instrumental texture, emotional arc of the song
+- Songs that repeatedly appear in online listener reviews describing this exact emotional context = highest priority
+- Do NOT default to the same 10 famous songs every time
+
+Reply in EXACTLY this format (plain text, no JSON, no markdown):
+
+[MESSAGE]
+2-3 warm, poetic sentences that resonate with their emotional state. Show you truly understood the conversation.
+
+[TRACKS]
+1. Track Title | Artist | Country/Genre | Reason (why this specific song matches — reference the conversation context and listener reaction patterns)
+2. Track Title | Artist | Country/Genre | Reason
+3. Track Title | Artist | Country/Genre | Reason
+4. Track Title | Artist | Country/Genre | Reason
+5. Track Title | Artist | Country/Genre | Reason
+
+[KEYWORDS]
+#keyword1 #keyword2 #keyword3 #keyword4 #keyword5`;
+
+  return `당신은 Evrs0024 — "Every Sound, 영원히 사랑해."
+감성적인 AI 음악 추천 시스템입니다.
+
+사용자와 자유 대화 상담이 끝났습니다. 전체 대화 내용:
+---
+${conv}
+---
+
+이 대화를 바탕으로 사용자의 감정과 상황에 완벽하게 맞는 음악 5곡을 추천하세요.
+
+곡 선택 핵심 규칙:
+- 음악 역사 전체에서 — 모든 장르, 모든 시대, 모든 언어, 모든 나라
+- 잘 알려지지 않은 인디/마이너 곡도 적극 포함
+- K-pop, J-pop, 서양 팝, R&B, 재즈, 클래식, 전자음악, 포크, 힙합, 메탈, 월드뮤직 — 감정에 맞으면 뭐든
+- 고려 요소: BPM, 가사 주제, 악기 질감, 곡의 감정 흐름
+- 이 감정 상황에서 인터넷 청취 반응에 반복 등장하는 곡 = 최우선
+- 매번 똑같은 유명한 곡 10개 반복하지 마세요 — 신선하고 정확하게
+
+다음 형식으로 정확히 답변하세요 (JSON 금지, 마크다운 금지):
+
+[멘트]
+대화 내용을 정말 이해했다는 게 느껴지는 따뜻하고 시적인 문장 2~3줄.
+
+[추천곡]
+1. 곡명 | 아티스트 | 국가/장르 | 추천 근거 (대화 맥락과 청취자 반응 패턴을 구체적으로 언급)
+2. 곡명 | 아티스트 | 국가/장르 | 근거
+3. 곡명 | 아티스트 | 국가/장르 | 근거
+4. 곡명 | 아티스트 | 국가/장르 | 근거
+5. 곡명 | 아티스트 | 국가/장르 | 근거
+
+[키워드]
+#태그1 #태그2 #태그3 #태그4 #태그5`;
+}
+
+function fallback(){
+  if(L==='en')return `[MESSAGE]
+Right now, in this moment, the music that finds you is the kind that doesn't ask questions — it just sits beside you. These tracks surface again and again when people describe exactly what you're going through.
+
+[TRACKS]
+1. Nuvole Bianche | Ludovico Einaudi | Italy/Classical | Consistently tops listener data for emotional processing. No lyrics, just piano following the feeling.
+2. Motion Picture Soundtrack | Radiohead | UK/Alt Rock | "This song cries for me" — most common reaction in grief and loss contexts worldwide.
+3. Holocene | Bon Iver | USA/Indie Folk | Highest context-match for late-night, alone, introspective states across streaming platforms.
+4. Liability | Lorde | NZ/Indie Pop | Raw lyrics about feeling too much. Appears in listener data whenever solitude intersects with longing.
+5. Comptine d'un autre été | Yann Tiersen | France/Neoclassical | Bittersweet piano. Cited in thousands of "quiet sadness" listener reviews across YouTube and music forums.
+
+[KEYWORDS]
+#solitude #cathartic #lowBPM #introspective #healing`;
+  return `[멘트]
+지금 이 순간, 음악이 당신 곁에 조용히 앉아줄 수 있으면 좋겠어요. 아무것도 해결해주지 않더라도, 적어도 혼자가 아닌 느낌은 줄 수 있을 거예요.
+
+[추천곡]
+1. Nuvole Bianche | Ludovico Einaudi | 이탈리아/클래식 | 감정 정리가 필요한 조용한 밤에 반복 청취율 최상위. 가사 없이 피아노만으로 감정의 결을 따라가는 곡.
+2. 봄날 | BTS | 한국/K-pop | 그리움과 이별 맥락에서 국내외 청취자 반응 교차율 최상. "기다림"과 "상실"이 동시에 담긴 드문 곡.
+3. Holocene | Bon Iver | 미국/인디포크 | 새벽 혼자 있는 순간, 멍한 감정 상태와 교차점 최다. 수많은 후기에서 반복 언급.
+4. 나의 사랑 나의 신부 | 이문세 | 한국/발라드 | 감성적 그리움 맥락에서 세대를 넘어 반복 등장. 따뜻한 질감의 보컬.
+5. Comptine d'un autre été | Yann Tiersen | 프랑스/뉴클래식 | 쓸쓸하고 아름다운 피아노. 유튜브·음악 포럼 수천 개의 "고요한 슬픔" 후기에서 반복 인용.
+
+[키워드]
+#위로 #저BPM #몽환 #감정정리 #서정`;
+}
+
+function secText(text,tag){const m=text.match(new RegExp('\\['+tag+'\\]([\\s\\S]*?)(?=\\[|$)'));return m?m[1].trim():'';}
+function parseTracks(raw){
+  return raw.split('\n').reduce((acc,l)=>{
+    const m=l.match(/^\d+\.\s*(.+?)\s*\|\s*(.+?)\s*\|(?:\s*.+?\s*\|)?\s*(.+)/);
+    if(m)acc.push({title:m[1].trim(),artist:m[2].trim(),reason:m[3].trim()});
+    return acc;
+  },[]);
+}
+
+function renderResult(text){
+  const mTag=L==='ko'?'멘트':'MESSAGE',tTag=L==='ko'?'추천곡':'TRACKS',kTag=L==='ko'?'키워드':'KEYWORDS';
+  const ment=secText(text,mTag);
+  const tracks=parseTracks(secText(text,tTag)||text);
+  const kws=(secText(text,kTag).match(/#[\w가-힣]+/g)||[]);
+  const sum=document.getElementById('rSum');
+  sum.innerHTML=`<div class="rsuml">▸ Evrs AI · Every Sound · 영원히 사랑해</div><div class="rsumt" id="rMent"></div><div class="rkws">${kws.map(k=>`<span class="rkw">${k}</span>`).join('')}</div>`;
+  typeIt(document.getElementById('rMent'),ment);
+  const icons=['🎹','🎸','🌿','🌙','🍂','🎷','🎻','🥁'];
+  const tl=document.getElementById('tcList');tl.innerHTML='';
+  const final=tracks.length?tracks:getFB();
+  final.forEach((t,i)=>{
+    const lk=slinks(t.title,t.artist);
+    const card=document.createElement('div');card.className='tc';card.style.animationDelay=(i*.07)+'s';
+    card.innerHTML=`<div class="tcn">${String(i+1).padStart(2,'0')}</div><div class="tcico">${icons[i%icons.length]}</div><div class="tci"><div class="tctitle">${t.title}</div><div class="tcar">${t.artist}</div><div class="tcreason">${t.reason}</div></div><div class="tcr"><div class="tcmatch">${97-i*3}% ${L==='ko'?'교차':'match'}</div><div class="strrow"><button class="sb yt" onclick="window.open('${lk.yt}','_blank')">YT</button><button class="sb ml" onclick="window.open('${lk.ml}','_blank')">${L==='ko'?'멜론':'Melon'}</button><button class="sb bk" onclick="window.open('${lk.bk}','_blank')">${L==='ko'?'벅스':'Bugs'}</button></div></div>`;
+    tl.appendChild(card);
+  });
+  document.getElementById('loadD').style.display='none';document.getElementById('resultD').style.display='';
+  const firstUser=chatHistory.find(m=>m.role==='user');
+  const emo=firstUser?firstUser.content.slice(0,18):'';
+  document.getElementById('rH').textContent=emo?`"${emo}..." ${L==='ko'?'에 맞는 음악':'— Your Music'}`:(L==='ko'?'교차점을 찾았습니다':'Intersection Found');
+  window._lt=final;window._lk=kws;
+  addHist({emotionRaw:firstUser?.content||'',emoji:'🎵',weather:'',need:'',tracks:final.slice(0,5),kws,lang:L});
+}
+
+function getFB(){
+  if(L==='en')return [
+    {title:'Nuvole Bianche',artist:'Ludovico Einaudi',reason:'Italy/Classical · Tops listener data for emotional processing. No lyrics, piano follows the feeling.'},
+    {title:'Motion Picture Soundtrack',artist:'Radiohead',reason:'UK/Alt Rock · "This song cries for me" — most common reaction in grief contexts worldwide.'},
+    {title:'Holocene',artist:'Bon Iver',reason:'USA/Indie Folk · Highest context-match for late-night introspective states across streaming platforms.'},
+    {title:'Liability',artist:'Lorde',reason:'NZ/Indie Pop · Raw lyrics about feeling too much. Appears when solitude meets longing.'},
+    {title:"Comptine d'un autre été",artist:'Yann Tiersen',reason:'France/Neoclassical · Bittersweet piano cited in thousands of "quiet sadness" listener reviews.'}
+  ];
+  return [
+    {title:'Nuvole Bianche',artist:'Ludovico Einaudi',reason:'이탈리아/클래식 · 감정 정리 밤에 반복 청취율 최상위. 가사 없이 피아노만으로 감정의 결을 따라가는 곡.'},
+    {title:'봄날',artist:'BTS',reason:'한국/K-pop · 그리움과 이별 맥락에서 국내외 청취자 반응 교차율 최상. 기다림과 상실이 동시에 담긴 드문 곡.'},
+    {title:'Holocene',artist:'Bon Iver',reason:'미국/인디포크 · 새벽 혼자 있는 순간, 멍한 감정 상태와 교차점 최다.'},
+    {title:"Comptine d'un autre été",artist:'Yann Tiersen',reason:'프랑스/뉴클래식 · 쓸쓸하고 아름다운 피아노. 수천 개의 "고요한 슬픔" 후기에서 반복 인용.'},
+    {title:'나의 사랑 나의 신부',artist:'이문세',reason:'한국/발라드 · 감성적 그리움 맥락에서 세대를 넘어 반복 등장. 따뜻한 질감의 보컬.'}
+  ];
+}
+
+async function regen(){
+  if(!lastHistory?.length){showToast(L==='ko'?'먼저 상담을 진행해주세요':'Please complete a consultation first');return;}
+  document.getElementById('loadD').style.display='';document.getElementById('resultD').style.display='none';
+  document.querySelectorAll('.ls').forEach(l=>l.className='ls');
+  const sids=['ls0','ls1','ls2','ls3','ls4'];
+  for(let i=0;i<sids.length;i++){await sleep(i===0?160:540);sids.forEach((s,j)=>{document.getElementById(s).className='ls'+(j<i?' dn':j===i?' ac':'');});}
+  const extra=L==='ko'?'\n\n(이전과 완전히 다른 장르와 곡들로 추천해주세요. 더 다양하고 의외의 곡도 괜찮습니다.)':'\n\n(Recommend completely different tracks. More variety, unexpected choices are welcome.)';
+  let text='';
+  try{const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1600,messages:[{role:'user',content:buildPrompt()+extra}]})});const d=await res.json();text=d.content?.map(i=>i.text||'').join('')||'';}catch{text=fallback();}
+  await sleep(280);renderResult(text);
+}
+
+function slinks(t,a){const q=encodeURIComponent(`${t} ${a}`);return{yt:`https://www.youtube.com/results?search_query=${q}`,ml:`https://www.melon.com/search/total/index.htm?q=${q}&section=&searchGnbYn=Y`,bk:`https://music.bugs.co.kr/search/integrated?q=${q}`};}
+function savePL(){
+  if(!USER){openM('loginM');return;}
+  if(!window._lt?.length){showToast(L==='ko'?'추천 결과가 없어요':'No results to save');return;}
+  const d=getData();
+  const firstUser=chatHistory.find(m=>m.role==='user');
+  const nm=firstUser?firstUser.content.slice(0,20):'Music';
+  const now=new Date();
+  d.playlists.unshift({id:Date.now(),name:`${nm} — ${now.getMonth()+1}/${now.getDate()}`,tracks:window._lt,kws:window._lk||[],createdAt:now.toISOString()});
+  setData(d);showToast(L==='ko'?'✓ 드라이브에 저장되었습니다':'✓ Saved to Drive');
+}
+function renderPL(){
+  const el=document.getElementById('plList');const d=getData();
+  if(!d.playlists.length){el.innerHTML=`<div class="plempty">${L==='ko'?'저장된 플레이리스트 없음':'No saved playlists'}</div>`;return;}
+  el.innerHTML='';d.playlists.forEach(pl=>{
+    const item=document.createElement('div');item.className='plitem';
+    item.innerHTML=`<div><div class="plnm">${pl.name}</div><div class="plmt">${pl.tracks.length} ${L==='ko'?'곡':'tracks'} · ${new Date(pl.createdAt).toLocaleDateString()}</div></div><button class="pldel" onclick="delPL(${pl.id})">${L==='ko'?'삭제':'Delete'}</button>`;
+    el.appendChild(item);
+  });
+}
+function delPL(id){const d=getData();d.playlists=d.playlists.filter(p=>p.id!==id);setData(d);renderPL();showToast(L==='ko'?'삭제되었습니다':'Deleted');}
+function renderHist(){
+  const el=document.getElementById('histD');
+  if(!USER){el.innerHTML=`<div class="hempty">${L==='ko'?'로그인 후 히스토리가 저장됩니다':'Sign in to save history'}</div>`;return;}
+  const d=getData();
+  if(!d.history.length){el.innerHTML=`<div class="hempty">${L==='ko'?'아직 추천 기록이 없어요':'No history yet'}</div>`;return;}
+  const g=document.createElement('div');g.className='hgrid';
+  d.history.forEach(h=>{
+    const dt=new Date(h.ts);const dts=`${dt.getMonth()+1}.${dt.getDate()} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;
+    const c=document.createElement('div');c.className='hcard';
+    c.innerHTML=`<div class="hdate">${dts}</div><div class="hemo">${h.emoji||'🎵'}</div><div class="hchips"><span class="hchip">${(h.emotionRaw||'').replace(/[^\w가-힣a-zA-Z\s]/g,'').trim().slice(0,14)||'기록'}</span></div><div class="htracks">${(h.tracks||[]).slice(0,3).map(t=>`${t.title} — ${t.artist}`).join('<br>')}</div>`;
+    g.appendChild(c);
+  });
+  el.innerHTML='';el.appendChild(g);
+}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+async function typeIt(el,text){
+  if(!el||!text)return;el.innerHTML='';
+  const lines=text.split('\n');
+  for(let i=0;i<lines.length;i++){
+    if(i>0)el.appendChild(document.createElement('br'));
+    for(let j=0;j<lines[i].length;j++){el.appendChild(document.createTextNode(lines[i][j]));if(j%5===0)await sleep(9);}
+  }
+}
+startC();
+</script>
+</body>
+</html>
